@@ -23,9 +23,9 @@ L'ordine **non passa da un server**: apre WhatsApp con il messaggio già scritto
 
 Ogni ordine viene copiato in un foglio Google: una riga per gusto e pezzatura con numero d'ordine, nome, telefono, prodotto, pezzi, importo, data e ora di ritiro, note e stato (menu a tendina: Da confermare / Confermato / Pronto / Ritirato / Annullato). Il foglio "Produzione" somma i pezzi da preparare per giorno.
 
-Foglio: **Cerea — Ordini panettone 2026** (nel Drive di robertodupuy12@gmail.com). Per attivare la registrazione, una volta sola:
+Il foglio sta nel Drive del profilo aziendale di Cerea ed è collegato al sito tramite l'app web di Apps Script il cui indirizzo è in `js/order.js` (`CONFIG.sheetUrl`). Se serve rifarlo da zero, una volta sola:
 
-1. Apri il foglio → **Estensioni → Apps Script**.
+1. Crea un foglio Google, aprilo → **Estensioni → Apps Script**.
 2. Cancella il codice di esempio e incolla il contenuto di `apps-script/Code.gs`. Salva.
 3. Scegli la funzione **setup** in alto e premi **Esegui** (autorizza l'accesso quando richiesto). Prepara intestazioni, menu "Stato" e foglio "Produzione".
 4. **Distribuisci → Nuova distribuzione → Tipo: App web**. *Esegui come:* **Me**. *Chi ha accesso:* **Chiunque**. Distribuisci e copia l'URL che finisce con `/exec`.

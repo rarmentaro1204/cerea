@@ -17,7 +17,7 @@
     maxQty: 10,                  // per riga di carrello
     // Registro ordini su Google Sheets: incollare qui l'URL dell'app web di Apps Script (vedi README).
     // Se è vuoto, l'ordine parte solo su WhatsApp.
-    sheetUrl: '',
+    sheetUrl: 'https://script.google.com/macros/s/AKfycbzlFyK3HkfNbJqQNFh9bvwqZ_rVo6xlaFkTPrkEq63_WYCjJFPi3t8LFOn0qDaq5Q6k/exec',
     sheetToken: '8675a9933ce08872a33a5b4f',  // deve coincidere con TOKEN in apps-script/Code.gs
     storageKey: 'cerea-cart-v1',
     address: 'Via Giuseppe Barbaroux 8, Torino'

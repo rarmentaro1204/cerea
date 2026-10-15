@@ -8,9 +8,9 @@
  * Installazione: vedi README.md, sezione "Foglio ordini".
  */
 
-// Foglio "Cerea — Ordini panettone 2026". Serve solo se lo script NON è collegato al foglio
-// (Estensioni > Apps Script dal foglio lo collega in automatico).
-var SHEET_ID = '1D5cJLkzN0v6toYL4vuqkgfmilXGayQHgvntmW-rVPb0';
+// Serve solo se lo script NON è collegato al foglio (Estensioni > Apps Script dal foglio lo collega
+// in automatico): in quel caso incolla qui l'ID del foglio (la parte tra /d/ e /edit nell'indirizzo).
+var SHEET_ID = '';
 // Deve coincidere con CONFIG.sheetToken in js/order.js. Evita invii casuali da altri siti.
 var TOKEN = '8675a9933ce08872a33a5b4f';
 
