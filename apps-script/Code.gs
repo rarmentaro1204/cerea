@@ -28,6 +28,15 @@ function getSheet_() {
   return ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
 }
 
+// Prima riga libera, guardando solo la colonna A (una colonna formattata o precompilata non conta).
+function nextRow_(sh) {
+  var vals = sh.getRange(1, 1, sh.getMaxRows(), 1).getValues();
+  for (var i = vals.length - 1; i >= 0; i--) {
+    if (vals[i][0] !== '') return i + 2;
+  }
+  return 2;
+}
+
 function text_(v, max) {
   return String(v == null ? '' : v).replace(/[\r\n\t]+/g, ' ').trim().slice(0, max);
 }
@@ -67,7 +76,10 @@ function doPost(e) {
 
     lock.waitLock(15000);
     var sh = getSheet_();
-    sh.getRange(sh.getLastRow() + 1, 1, rows.length, HEADERS.length).setValues(rows);
+    var start = nextRow_(sh);
+    var lastNeeded = start + rows.length - 1;
+    if (lastNeeded > sh.getMaxRows()) sh.insertRowsAfter(sh.getMaxRows(), lastNeeded - sh.getMaxRows());
+    sh.getRange(start, 1, rows.length, HEADERS.length).setValues(rows);
     return reply_({ ok: true, id: id });
   } catch (err) {
     return reply_({ ok: false, error: String(err) });
@@ -99,7 +111,6 @@ function setup() {
   sh.getRange('H2:H').setNumberFormat('#,##0.00');
   sh.getRange('L2:L1000').setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(STATI, true).setAllowInvalid(false).build());
-  sh.getRange('L2:L1000').setValue('Da confermare');
   var widths = [130, 110, 170, 130, 260, 80, 60, 110, 130, 80, 240, 120];
   widths.forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
   if (!sh.getFilter()) sh.getRange(1, 1, Math.max(sh.getLastRow(), 2), HEADERS.length).createFilter();
@@ -112,9 +123,11 @@ function setup() {
 
   var prod = ss.getSheetByName('Produzione') || ss.insertSheet('Produzione');
   prod.clear();
+  // setFormula vuole sempre la sintassi inglese (virgole), anche se il foglio è in italiano.
+  // Se la scrivi A MANO in un foglio italiano usa il punto e virgola tra gli argomenti.
   prod.getRange('A1').setFormula(
-    '=QUERY(' + SHEET_NAME + '!A2:L, "select I, E, F, sum(G) where I is not null and L <> \'Annullato\' ' +
-    'group by I, E, F order by I label I \'Giorno ritiro\', E \'Gusto\', F \'Pezzatura\', sum(G) \'Pezzi\'", 0)');
+    '=IFERROR(QUERY(' + SHEET_NAME + '!A2:L, "select I, E, F, sum(G) where I is not null and L <> \'Annullato\' ' +
+    'group by I, E, F order by I label I \'Giorno ritiro\', E \'Gusto\', F \'Pezzatura\', sum(G) \'Pezzi\'", 0), "Nessun ordine ancora")');
   prod.getRange('A:A').setNumberFormat('ddd dd/MM/yyyy');
   prod.setColumnWidths(1, 1, 150); prod.setColumnWidths(2, 1, 290); prod.setColumnWidths(3, 2, 90);
   prod.getRange('A1:D1').setFontWeight('bold').setBackground('#efebe3');

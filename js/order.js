@@ -377,23 +377,6 @@
   dlg.addEventListener('click', function (e) { if (e.target === dlg) closeCart(); });
 
   // ── Eventi ───────────────────────────────────────────────────────────────
-  // Il pulsante mostra il prezzo della pezzatura scelta.
-  function syncAddButton(card) {
-    var checked = card.querySelector('input[type=radio]:checked');
-    var btn = card.querySelector('.add-btn');
-    if (!checked || !btn) return;
-    var item = catalog[card.dataset.id + '|' + checked.value];
-    btn.textContent = 'Aggiungi · ' + money.format(item.price).replace(',00', '');
-    btn.setAttribute('aria-label', 'Aggiungi al carrello: ' + item.name + ', ' + sizeLabel(item.size) + ', ' + money.format(item.price));
-    btn.classList.remove('is-added');
-  }
-  Array.prototype.forEach.call(document.querySelectorAll('.flavor'), function (card) {
-    card.addEventListener('change', function (e) {
-      if (e.target.type === 'radio') syncAddButton(card);
-    });
-    syncAddButton(card);
-  });
-
   $('flavors').addEventListener('click', function (e) {
     var b = e.target.closest('.add-btn');
     if (!b) return;
@@ -405,7 +388,7 @@
     b.textContent = 'Aggiunto ✓';
     b.classList.add('is-added');
     clearTimeout(b._t);
-    b._t = setTimeout(function () { syncAddButton(card); }, 1400);
+    b._t = setTimeout(function () { b.textContent = 'Aggiungi al carrello'; b.classList.remove('is-added'); }, 1400);
   });
 
   $('cart-lines').addEventListener('click', function (e) {
