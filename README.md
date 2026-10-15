@@ -12,7 +12,6 @@ Sito statico (nessuna build) pubblicato su Netlify. Pagine: `index.html`, `panet
 | `minLeadDays` | anticipo minimo tra ordine e ritiro |
 | `lastPickup` | ultimo giorno di ritiro (`YYYY-MM-DD`) |
 | `closedWeekdays` | giorni di chiusura (0 = domenica, 1 = lunedì) |
-| `openFrom` / `openTo` / `slotStep` | fasce orarie di ritiro (minuti dalla mezzanotte) |
 
 Gusti e prezzi stanno nell'HTML di `panettone/index.html` (`data-id`, `data-name`, `data-price`): il carrello li legge da lì.
 Se cambi prezzi, gusti o date aggiorna anche il JSON-LD della pagina, le FAQ, `llms.txt` e `condizioni-di-vendita/`.
@@ -21,7 +20,7 @@ L'ordine **non passa da un server**: apre WhatsApp con il messaggio già scritto
 
 ## Foglio ordini (Google Sheets)
 
-Ogni ordine viene copiato in un foglio Google: una riga per gusto e pezzatura con numero d'ordine, nome, telefono, prodotto, pezzi, importo, data e ora di ritiro, note e stato (menu a tendina: Da confermare / Confermato / Pronto / Ritirato / Annullato). Il foglio "Produzione" somma i pezzi da preparare per giorno.
+Ogni ordine viene copiato in un foglio Google: una riga per gusto e pezzatura con numero d'ordine, nome, telefono, prodotto, pezzi, importo, giorno di ritiro, note e stato (menu a tendina: Da confermare / Confermato / Pronto / Ritirato / Annullato). Il foglio "Produzione" somma i pezzi da preparare per giorno.
 
 Il foglio sta nel Drive del profilo aziendale di Cerea ed è collegato al sito tramite l'app web di Apps Script il cui indirizzo è in `js/order.js` (`CONFIG.sheetUrl`). Se serve rifarlo da zero, una volta sola:
 

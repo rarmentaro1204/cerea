@@ -16,7 +16,7 @@ var TOKEN = '8675a9933ce08872a33a5b4f';
 
 var SHEET_NAME = 'Ordini';
 var HEADERS = ['Ricevuto il', 'ID ordine', 'Nome e cognome', 'Telefono', 'Gusto', 'Pezzatura', 'Pezzi',
-               'Importo riga (€)', 'Data ritiro', 'Ora ritiro', 'Note', 'Stato'];
+               'Importo riga (€)', 'Data ritiro', 'Note', 'Stato'];
 var STATI = ['Da confermare', 'Confermato', 'Pronto', 'Ritirato', 'Annullato'];
 
 function getSpreadsheet_() {
@@ -26,6 +26,13 @@ function getSpreadsheet_() {
 function getSheet_() {
   var ss = getSpreadsheet_();
   return ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
+}
+
+// Titoli di colonna in riga 1 (se il foglio è ancora vuoto si usano quelli standard).
+function headerRow_(sh) {
+  var lastCol = Math.max(sh.getLastColumn(), 1);
+  var row = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  return row.some(function (h) { return h !== ''; }) ? row : HEADERS;
 }
 
 // Prima riga libera, guardando solo la colonna A (una colonna formattata o precompilata non conta).
@@ -57,8 +64,8 @@ function doPost(e) {
     if (data.token !== TOKEN) return reply_({ ok: false, error: 'token' });
 
     var items = Array.isArray(data.items) ? data.items.slice(0, 30) : [];
-    var date = text_(data.date, 10), time = text_(data.time, 5);
-    if (!items.length || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) {
+    var date = text_(data.date, 10);
+    if (!items.length || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
       return reply_({ ok: false, error: 'dati' });
     }
 
@@ -68,18 +75,24 @@ function doPost(e) {
     var notes = safe_(text_(data.notes, 400));
     var id = text_(data.id, 20);
 
+    // Le colonne si riconoscono dal titolo in riga 1: l'ordine delle colonne nel foglio può cambiare.
+    var sh = getSheet_();
+    var head = headerRow_(sh);
     var rows = items.map(function (it) {
       var qty = Math.max(1, Math.min(10, parseInt(it.qty, 10) || 1));
-      return [now, id, name, phone, text_(it.flavor, 80), text_(it.size, 10), qty,
-              Number(it.amount) || 0, date, time, notes, 'Da confermare'];
+      var v = {
+        'Ricevuto il': now, 'ID ordine': id, 'Nome e cognome': name, 'Telefono': phone,
+        'Gusto': text_(it.flavor, 80), 'Pezzatura': text_(it.size, 10), 'Pezzi': qty,
+        'Importo riga (€)': Number(it.amount) || 0, 'Data ritiro': date, 'Note': notes, 'Stato': 'Da confermare'
+      };
+      return head.map(function (h) { return v.hasOwnProperty(h) ? v[h] : ''; });
     });
 
     lock.waitLock(15000);
-    var sh = getSheet_();
     var start = nextRow_(sh);
     var lastNeeded = start + rows.length - 1;
     if (lastNeeded > sh.getMaxRows()) sh.insertRowsAfter(sh.getMaxRows(), lastNeeded - sh.getMaxRows());
-    sh.getRange(start, 1, rows.length, HEADERS.length).setValues(rows);
+    sh.getRange(start, 1, rows.length, head.length).setValues(rows);
     return reply_({ ok: true, id: id });
   } catch (err) {
     return reply_({ ok: false, error: String(err) });
@@ -97,37 +110,52 @@ function doGet() {
  * Da eseguire UNA volta (menu Esegui > setup): intestazioni, formato, menu a tendina "Stato",
  * filtro e foglio "Produzione" con i pezzi da preparare per giorno.
  */
+// Lettera di colonna di un titolo (A, B, C…).
+function col_(name) {
+  return String.fromCharCode(65 + HEADERS.indexOf(name));
+}
+
 function setup() {
   var ss = getSpreadsheet_();
   ss.setSpreadsheetTimeZone('Europe/Rome');
 
   var sh = ss.getSheetByName(SHEET_NAME) || ss.getSheets()[0];
   sh.setName(SHEET_NAME);
-  sh.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]).setFontWeight('bold').setBackground('#efebe3');
+
+  // Vecchio foglio con la colonna "Ora ritiro" (ora si sceglie solo il giorno): la tolgo.
+  var current = sh.getRange(1, 1, 1, Math.max(sh.getLastColumn(), 1)).getValues()[0];
+  var oldTime = current.indexOf('Ora ritiro');
+  if (oldTime >= 0) sh.deleteColumn(oldTime + 1);
+
+  var n = HEADERS.length;
+  var lastCol = col_('Stato');
+  sh.getRange(1, 1, 1, n).setValues([HEADERS]).setFontWeight('bold').setBackground('#efebe3');
   sh.setFrozenRows(1);
-  sh.getRange('D2:D').setNumberFormat('@');
-  sh.getRange('A2:A').setNumberFormat('dd/MM/yyyy HH:mm');
-  sh.getRange('I2:I').setNumberFormat('ddd dd/MM/yyyy');
-  sh.getRange('H2:H').setNumberFormat('#,##0.00');
-  sh.getRange('L2:L1000').setDataValidation(
+  sh.getRange(col_('Telefono') + '2:' + col_('Telefono')).setNumberFormat('@');
+  sh.getRange(col_('Ricevuto il') + '2:' + col_('Ricevuto il')).setNumberFormat('dd/MM/yyyy HH:mm');
+  sh.getRange(col_('Data ritiro') + '2:' + col_('Data ritiro')).setNumberFormat('ddd dd/MM/yyyy');
+  sh.getRange(col_('Importo riga (€)') + '2:' + col_('Importo riga (€)')).setNumberFormat('#,##0.00');
+  sh.getRange(col_('Stato') + '2:' + col_('Stato') + '1000').setDataValidation(
     SpreadsheetApp.newDataValidation().requireValueInList(STATI, true).setAllowInvalid(false).build());
-  var widths = [130, 110, 170, 130, 260, 80, 60, 110, 130, 80, 240, 120];
+  var widths = [130, 110, 170, 130, 260, 80, 60, 110, 140, 240, 120];
   widths.forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
-  if (!sh.getFilter()) sh.getRange(1, 1, Math.max(sh.getLastRow(), 2), HEADERS.length).createFilter();
+  if (!sh.getFilter()) sh.getRange(1, 1, Math.max(sh.getLastRow(), 2), n).createFilter();
 
-  var rules = [
-    SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo('Annullato').setFontColor('#a1261a').setRanges([sh.getRange('A2:L1000')]).build(),
-    SpreadsheetApp.newConditionalFormatRule().whenTextEqualTo('Ritirato').setFontColor('#8a8a80').setRanges([sh.getRange('A2:L1000')]).build()
-  ];
-  sh.setConditionalFormatRules(rules);
+  var area = sh.getRange('A2:' + lastCol + '1000');
+  sh.setConditionalFormatRules([
+    SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=$' + lastCol + '2="Annullato"').setFontColor('#a1261a').setRanges([area]).build(),
+    SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=$' + lastCol + '2="Ritirato"').setFontColor('#8a8a80').setRanges([area]).build()
+  ]);
 
+  var day = col_('Data ritiro'), flavor = col_('Gusto'), size = col_('Pezzatura'), qty = col_('Pezzi'), state = col_('Stato');
   var prod = ss.getSheetByName('Produzione') || ss.insertSheet('Produzione');
   prod.clear();
   // setFormula vuole sempre la sintassi inglese (virgole), anche se il foglio è in italiano.
   // Se la scrivi A MANO in un foglio italiano usa il punto e virgola tra gli argomenti.
   prod.getRange('A1').setFormula(
-    '=IFERROR(QUERY(' + SHEET_NAME + '!A2:L, "select I, E, F, sum(G) where I is not null and L <> \'Annullato\' ' +
-    'group by I, E, F order by I label I \'Giorno ritiro\', E \'Gusto\', F \'Pezzatura\', sum(G) \'Pezzi\'", 0), "Nessun ordine ancora")');
+    '=IFERROR(QUERY(' + SHEET_NAME + '!A2:' + lastCol + ', "select ' + day + ', ' + flavor + ', ' + size + ', sum(' + qty + ') ' +
+    'where ' + day + ' is not null and ' + state + ' <> \'Annullato\' group by ' + day + ', ' + flavor + ', ' + size + ' order by ' + day + ' ' +
+    'label ' + day + ' \'Giorno ritiro\', ' + flavor + ' \'Gusto\', ' + size + ' \'Pezzatura\', sum(' + qty + ') \'Pezzi\'", 0), "Nessun ordine ancora")');
   prod.getRange('A:A').setNumberFormat('ddd dd/MM/yyyy');
   prod.setColumnWidths(1, 1, 150); prod.setColumnWidths(2, 1, 290); prod.setColumnWidths(3, 2, 90);
   prod.getRange('A1:D1').setFontWeight('bold').setBackground('#efebe3');
@@ -144,7 +172,7 @@ function provaOrdine() {
   var giorno = Utilities.formatDate(d, 'Europe/Rome', 'yyyy-MM-dd');
   var risposta = doPost({ postData: { contents: JSON.stringify({
     token: TOKEN, id: 'PROVA-' + Utilities.formatDate(new Date(), 'Europe/Rome', 'HHmmss'),
-    name: 'PROVA Mario Rossi', phone: '+393330000000', date: giorno, time: '10:30', notes: 'ORDINE DI PROVA',
+    name: 'PROVA Mario Rossi', phone: '+393330000000', date: giorno, notes: 'ORDINE DI PROVA',
     items: [{ flavor: 'Classico', size: '750 g', qty: 2, amount: 68 }, { flavor: 'Cacao e tre cioccolati', size: '1 kg', qty: 1, amount: 45 }]
   }) } });
   Logger.log(risposta.getContent());

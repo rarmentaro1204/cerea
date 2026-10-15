@@ -11,9 +11,6 @@
     minLeadDays: 3,              // anticipo minimo tra ordine e ritiro
     lastPickup: '2026-12-24',    // ultimo giorno di ritiro (YYYY-MM-DD)
     closedWeekdays: [0, 1],      // 0 = domenica, 1 = lunedì
-    openFrom: 8 * 60,            // 08:00
-    openTo: 18 * 60,             // 18:00
-    slotStep: 30,                // minuti
     maxQty: 10,                  // per riga di carrello
     // Registro ordini su Google Sheets: incollare qui l'URL dell'app web di Apps Script (vedi README).
     // Se è vuoto, l'ordine parte solo su WhatsApp.
@@ -178,15 +175,10 @@
     input.max = CONFIG.lastPickup;
     if (min > max) {
       $('date-hint').textContent = 'Le prenotazioni online per questa stagione sono chiuse. Scrivici su WhatsApp.';
-      input.disabled = true; $('time').disabled = true;
+      input.disabled = true;
     } else {
       $('date-hint').textContent = 'Ritiro da martedì a sabato, 08:00–18:00. Primo giorno disponibile: ' + longDate(min) +
         '. Ultimo: ' + longDate(max) + '.';
-    }
-    var sel = $('time');
-    for (var m = CONFIG.openFrom; m < CONFIG.openTo; m += CONFIG.slotStep) {
-      var label = pad(Math.floor(m / 60)) + ':' + pad(m % 60);
-      var o = document.createElement('option'); o.value = label; o.textContent = label; sel.appendChild(o);
     }
   }
 
@@ -236,7 +228,6 @@
     }
     if (n === 2) {
       if (!checkDate()) bad('date');
-      if (!$('time').value) { setErr('time', 'Scegli l\'orario di ritiro.'); bad('time'); } else setErr('time', '');
     }
     if (n === 3) {
       if ($('name').value.trim().length < 2) { setErr('name', 'Inserisci nome e cognome.'); bad('name'); } else setErr('name', '');
@@ -252,9 +243,7 @@
 
   function pickupText() {
     var d = parseISO($('date').value);
-    return d && $('time').value
-      ? d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + $('time').value
-      : '';
+    return d ? d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' }) : '';
   }
 
   function renderReview() {
@@ -320,7 +309,6 @@
       name: data.name,
       phone: '+' + data.phone,
       date: iso(data.date),
-      time: data.time,
       notes: data.notes,
       items: cart.map(function (l) {
         var i = catalog[l.k];
@@ -339,8 +327,8 @@
   }
 
   function build(data) {
-    var when = longDate(data.date) + ', ore ' + data.time;
-    var base = linesText() + '\n\nTotale: ' + money.format(total()) + '\nRitiro: ' + when + ' (' + CONFIG.address + ')\nPagamento al ritiro.';
+    var when = longDate(data.date);
+    var base = linesText() + '\n\nTotale: ' + money.format(total()) + '\nRitiro: ' + when + ' — ' + CONFIG.address + ' (aperto 08:00–18:00)\nPagamento al ritiro.';
 
     var shop = 'Ciao Cerea, vorrei prenotare (ordine ' + data.id + '):\n' + base +
       '\n\nNome: ' + data.name + '\nTelefono: +' + data.phone +
@@ -413,7 +401,6 @@
   });
 
   $('date').addEventListener('change', checkDate);
-  $('time').addEventListener('change', function () { setErr('time', ''); });
   $('name').addEventListener('input', function () { setErr('name', ''); });
   $('phone').addEventListener('input', function () { setErr('phone', ''); });
   $('privacy').addEventListener('change', function () { $('privacy-err').textContent = ''; });
@@ -429,7 +416,6 @@
 
     var data = {
       date: parseISO($('date').value),
-      time: $('time').value,
       name: $('name').value.trim().replace(/\s+/g, ' '),
       phone: normalizePhone($('phone').value),
       notes: $('notes').value.trim().replace(/\s+/g, ' '),

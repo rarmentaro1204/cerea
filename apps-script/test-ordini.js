@@ -29,7 +29,6 @@
   const days = [];
   const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 3);
   while (days.length < 12) { if (d.getDay() !== 0 && d.getDay() !== 1) days.push(iso(d)); d.setDate(d.getDate() + 1); }
-  const times = []; for (let m = 8 * 60; m < 18 * 60; m += 30) times.push(`${pad(Math.floor(m / 60))}:${pad(m % 60)}`);
 
   const stamp = Date.now().toString(36).toUpperCase().slice(-4);
   let ok = 0, unknown = 0, fail = 0;
@@ -46,7 +45,6 @@
       name: `PROVA ${NAMES[i]}`,
       phone: `+39333000${pad(i + 1)}${pad(i + 1)}`,
       date: pick(days),
-      time: pick(times),
       notes: 'ORDINE DI PROVA',
       items: [...lines.values()].map((l) => ({ flavor: l.flavor, size: l.size, qty: l.qty, amount: l.price * l.qty })),
     };
