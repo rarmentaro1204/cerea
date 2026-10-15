@@ -327,7 +327,7 @@
 }
 </script>
 </head>
-<body class="has-bar">
+<body>
 <a class="skip" href="#main">Vai ai contenuti</a>
 <header class="site-header">
   <div class="wrap">
@@ -359,98 +359,149 @@
     </div>
   </section>
 
-  <div class="wrap order">
-    <section aria-labelledby="gusti-h">
-      <h2 class="step-title" id="gusti-h"><b>1</b> Scegli gusto e pezzatura</h2>
-      <div id="flavors">
+  <section class="wrap shop" aria-labelledby="gusti-h">
+    <div class="shop-head"><h2 id="gusti-h">Scegli il gusto e la pezzatura</h2></div>
+    <div class="flavor-grid" id="flavors">
         <article class="flavor" data-id="classico" data-name="Classico">
-          <div>
+          <div class="flavor-body">
             <h3 class="h3">Classico</h3>
             <p>Il panettone della tradizione: lievito madre vivo, uvetta e arancia candita, lunga lievitazione.</p>
           </div>
-          <div class="size-btns">
-            <button type="button" class="size-btn" data-size="750" data-price="34" aria-label="Aggiungi Classico 750 g al carrello"><span class="plus" aria-hidden="true">+</span><b>750 g</b><span>34 €</span></button>
-            <button type="button" class="size-btn" data-size="1000" data-price="45" aria-label="Aggiungi Classico 1 kg al carrello"><span class="plus" aria-hidden="true">+</span><b>1 kg</b><span>45 €</span></button>
+          <fieldset class="size-picker">
+            <legend>Pezzatura</legend>
+              <label><input type="radio" name="size-classico" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+              <label><input type="radio" name="size-classico" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+          </fieldset>
+          <div class="flavor-foot">
+            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Classico">Aggiungi al carrello</button>
+            <span class="in-cart" aria-hidden="true"></span>
           </div>
         </article>
         <article class="flavor" data-id="pesche" data-name="Pesche semi candite, caramello e nocciole">
-          <div>
+          <div class="flavor-body">
             <h3 class="h3">Pesche semi candite, caramello e nocciole</h3>
             <p>Pesche semi candite, caramello e nocciole in un impasto morbido a lievito madre.</p>
           </div>
-          <div class="size-btns">
-            <button type="button" class="size-btn" data-size="750" data-price="34" aria-label="Aggiungi Pesche semi candite, caramello e nocciole 750 g al carrello"><span class="plus" aria-hidden="true">+</span><b>750 g</b><span>34 €</span></button>
-            <button type="button" class="size-btn" data-size="1000" data-price="45" aria-label="Aggiungi Pesche semi candite, caramello e nocciole 1 kg al carrello"><span class="plus" aria-hidden="true">+</span><b>1 kg</b><span>45 €</span></button>
+          <fieldset class="size-picker">
+            <legend>Pezzatura</legend>
+              <label><input type="radio" name="size-pesche" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+              <label><input type="radio" name="size-pesche" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+          </fieldset>
+          <div class="flavor-foot">
+            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Pesche semi candite, caramello e nocciole">Aggiungi al carrello</button>
+            <span class="in-cart" aria-hidden="true"></span>
           </div>
         </article>
         <article class="flavor" data-id="milano" data-name="Milano, frutti rossi e cioccolato fondente">
-          <div>
+          <div class="flavor-body">
             <h3 class="h3">Milano, frutti rossi e cioccolato fondente</h3>
             <p>Il panettone milanese con frutti rossi e cioccolato fondente: acidità e profondità.</p>
           </div>
-          <div class="size-btns">
-            <button type="button" class="size-btn" data-size="750" data-price="34" aria-label="Aggiungi Milano, frutti rossi e cioccolato fondente 750 g al carrello"><span class="plus" aria-hidden="true">+</span><b>750 g</b><span>34 €</span></button>
-            <button type="button" class="size-btn" data-size="1000" data-price="45" aria-label="Aggiungi Milano, frutti rossi e cioccolato fondente 1 kg al carrello"><span class="plus" aria-hidden="true">+</span><b>1 kg</b><span>45 €</span></button>
+          <fieldset class="size-picker">
+            <legend>Pezzatura</legend>
+              <label><input type="radio" name="size-milano" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+              <label><input type="radio" name="size-milano" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+          </fieldset>
+          <div class="flavor-foot">
+            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Milano, frutti rossi e cioccolato fondente">Aggiungi al carrello</button>
+            <span class="in-cart" aria-hidden="true"></span>
           </div>
         </article>
         <article class="flavor" data-id="cacao" data-name="Cacao e tre cioccolati">
-          <div>
+          <div class="flavor-body">
             <h3 class="h3">Cacao e tre cioccolati</h3>
             <p>Impasto al cacao con tre cioccolati: il più goloso della carta.</p>
           </div>
-          <div class="size-btns">
-            <button type="button" class="size-btn" data-size="750" data-price="34" aria-label="Aggiungi Cacao e tre cioccolati 750 g al carrello"><span class="plus" aria-hidden="true">+</span><b>750 g</b><span>34 €</span></button>
-            <button type="button" class="size-btn" data-size="1000" data-price="45" aria-label="Aggiungi Cacao e tre cioccolati 1 kg al carrello"><span class="plus" aria-hidden="true">+</span><b>1 kg</b><span>45 €</span></button>
+          <fieldset class="size-picker">
+            <legend>Pezzatura</legend>
+              <label><input type="radio" name="size-cacao" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+              <label><input type="radio" name="size-cacao" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+          </fieldset>
+          <div class="flavor-foot">
+            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Cacao e tre cioccolati">Aggiungi al carrello</button>
+            <span class="in-cart" aria-hidden="true"></span>
           </div>
         </article>
-      </div>
-      <noscript><p class="alert mt-md">Per usare il carrello serve JavaScript. Puoi comunque ordinare scrivendoci su <a href="https://wa.me/393517194846?text=Ciao%20Cerea%2C%20vorrei%20ordinare%20un%20panettone">WhatsApp</a>.</p></noscript>
-    </section>
+    </div>
+    <noscript><p class="alert">Per usare il carrello serve JavaScript. Puoi comunque ordinare scrivendoci su <a href="https://wa.me/393517194846?text=Ciao%20Cerea%2C%20vorrei%20ordinare%20un%20panettone">WhatsApp</a>.</p></noscript>
+  </section>
 
-    <aside class="sticky" id="carrello" aria-labelledby="cart-h">
-      <div class="panel" id="order-panel">
-        <h2 class="step-title" id="cart-h"><b>2</b> Il tuo carrello</h2>
-        <p class="cart-empty" id="cart-empty">Il carrello è vuoto. Aggiungi un panettone dall'elenco.</p>
-        <ul class="cart-lines" id="cart-lines" hidden></ul>
-        <div class="cart-total" id="cart-total" hidden><span>Totale</span><b id="total">0,00 €</b></div>
-        <p class="sr-only" id="cart-status" role="status" aria-live="polite"></p>
-
-        <form class="form" id="order-form" novalidate>
-          <h2 class="step-title flush"><b>3</b> Ritiro e contatti</h2>
-          <div class="row-2">
-            <div class="field"><label for="date">Data di ritiro</label><input type="date" id="date" name="date" required><span class="error" id="date-err"></span></div>
-            <div class="field"><label for="time">Orario</label><select id="time" name="time" required><option value="">Scegli</option></select><span class="error" id="time-err"></span></div>
-          </div>
-          <p class="hint small" id="date-hint">Ritiro da martedì a sabato, 08:00–18:00.</p>
-          <div class="field"><label for="name">Nome e cognome</label><input type="text" id="name" name="name" autocomplete="name" required maxlength="80"><span class="error" id="name-err"></span></div>
-          <div class="field"><label for="phone">Telefono (WhatsApp)</label><input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="333 1234567" required maxlength="24"><span class="error" id="phone-err"></span><span class="hint">Per numeri esteri inserisci il prefisso, es. +44.</span></div>
-          <div class="field"><label for="notes">Note (facoltative)</label><textarea id="notes" name="notes" maxlength="400" placeholder="Allergie, richieste particolari…"></textarea></div>
-          <label class="check"><input type="checkbox" id="privacy" name="privacy" required><span>Ho letto l'<a href="/privacy/" target="_blank" rel="noopener">informativa privacy</a> e le <a href="/condizioni-di-vendita/" target="_blank" rel="noopener">condizioni di vendita</a>.</span></label>
-          <span class="error pull-up" id="privacy-err"></span>
-          <div class="alert" id="form-alert" role="alert" hidden></div>
-          <button type="submit" class="btn btn--accent btn--block" id="submit" disabled>Ordina su WhatsApp</button>
-          <p class="form-note">Premendo «Ordina» si apre WhatsApp con il riepilogo pronto da inviare a Cerea. L'ordine è valido dopo il tuo invio e la nostra conferma di disponibilità. Paghi al ritiro.</p>
-        </form>
-
-        <div class="done" id="done" hidden aria-live="polite">
-          <h2 class="h3">Ordine pronto: manca solo l'invio</h2>
-          <p class="small">Se WhatsApp non si è aperto, usa il primo pulsante. Il messaggio deve essere <strong>inviato</strong> perché Cerea riceva l'ordine.</p>
-          <div class="summary" id="summary"></div>
-          <div class="actions">
-            <a class="btn btn--accent btn--block" id="send-shop" href="#" target="_blank" rel="noopener">1 · Invia l'ordine a Cerea</a>
-            <a class="btn btn--ghost btn--block" id="send-me" href="#" target="_blank" rel="noopener">2 · Salva la conferma sul tuo WhatsApp</a>
-            <button type="button" class="link link-btn" id="new-order">Nuovo ordine</button>
-          </div>
-          <p class="form-note mt-md">Cerea ti risponde su WhatsApp per confermare disponibilità e ritiro.</p>
-        </div>
-      </div>
-    </aside>
+  <div class="cart-bar" id="cart-bar" role="region" aria-label="Carrello" hidden>
+    <div><small id="bar-count">0 panettoni</small><b id="bar-total">0,00 €</b></div>
+    <button type="button" class="btn" id="open-cart">Vai al carrello</button>
   </div>
+  <p class="sr-only" id="cart-status" role="status" aria-live="polite"></p>
 
-  <div class="mobile-bar" id="mobile-bar">
-    <div><small>Totale carrello</small><b id="bar-total">0,00 €</b></div>
-    <a href="#carrello">Vai al carrello</a>
-  </div>
+  <dialog class="sheet" id="checkout" aria-labelledby="co-title">
+    <div class="sheet-head">
+      <h2 id="co-title">Il tuo ordine</h2>
+      <button type="button" class="icon-btn" id="close-cart" aria-label="Chiudi il carrello">&times;</button>
+    </div>
+    <ol class="steps" id="steps" aria-label="Passaggi dell'ordine">
+      <li>1 · Carrello</li><li>2 · Ritiro</li><li>3 · I tuoi dati</li>
+    </ol>
+
+    <form id="order-form" novalidate>
+      <div class="sheet-body">
+        <section class="step" data-step="1">
+          <h3 tabindex="-1">Controlla il carrello</h3>
+          <div class="cart-empty" id="cart-empty" hidden>
+            <p>Il carrello è vuoto. Scegli un panettone per iniziare.</p>
+            <button type="button" class="btn btn--ghost" id="back-to-shop">Scegli un panettone</button>
+          </div>
+          <ul class="cart-lines" id="cart-lines"></ul>
+          <div class="cart-total" id="cart-total"><span>Totale</span><b id="total">0,00 €</b></div>
+        </section>
+
+        <section class="step" data-step="2" hidden>
+          <h3 tabindex="-1">Quando vuoi ritirarlo?</h3>
+          <p class="small" id="date-hint">Ritiro in negozio da martedì a sabato, 08:00–18:00.</p>
+          <div class="fields">
+            <div class="row-2">
+              <div class="field"><label for="date">Giorno</label><input type="date" id="date" name="date" required aria-describedby="date-hint date-err"><span class="error" id="date-err" role="alert"></span></div>
+              <div class="field"><label for="time">Orario</label><select id="time" name="time" required aria-describedby="time-err"><option value="">Scegli</option></select><span class="error" id="time-err" role="alert"></span></div>
+            </div>
+            <p class="form-note">Ritiro in Via Giuseppe Barbaroux, 8, Torino.</p>
+          </div>
+        </section>
+
+        <section class="step" data-step="3" hidden>
+          <h3 tabindex="-1">Ultimo passo: i tuoi dati</h3>
+          <dl class="review" id="review"></dl>
+          <div class="fields">
+            <div class="row-2">
+              <div class="field"><label for="name">Nome e cognome</label><input type="text" id="name" name="name" autocomplete="name" required maxlength="80" aria-describedby="name-err"><span class="error" id="name-err" role="alert"></span></div>
+              <div class="field"><label for="phone">Telefono (WhatsApp)</label><input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="333 1234567" required maxlength="24" aria-describedby="phone-err"><span class="error" id="phone-err" role="alert"></span></div>
+            </div>
+            <details class="note-toggle"><summary>Aggiungi una nota <span>(facoltativo)</span></summary><div class="field"><label class="sr-only" for="notes">Note</label><textarea id="notes" name="notes" maxlength="400" placeholder="Allergie, richieste particolari…"></textarea></div></details>
+            <div>
+              <label class="check"><input type="checkbox" id="privacy" name="privacy" required aria-describedby="privacy-err"><span>Ho letto l'<a href="/privacy/" target="_blank" rel="noopener">informativa privacy</a> e le <a href="/condizioni-di-vendita/" target="_blank" rel="noopener">condizioni di vendita</a>.</span></label>
+              <span class="error block" id="privacy-err" role="alert"></span>
+            </div>
+          </div>
+        </section>
+        <div class="alert" id="form-alert" role="alert" hidden></div>
+      </div>
+      <div class="sheet-foot">
+        <button type="button" class="btn btn--ghost" id="back" hidden>Indietro</button>
+        <button type="submit" class="btn btn--accent" id="next">Continua con il ritiro</button>
+      </div>
+    </form>
+
+    <div class="done" id="done" hidden>
+      <div class="sheet-body">
+        <h3 tabindex="-1" id="done-title">Quasi fatto: invia il messaggio su WhatsApp</h3>
+        <p class="small">L'ordine arriva a Cerea solo quando <strong>invii</strong> il messaggio. Se WhatsApp non si è aperto, usa il primo pulsante.</p>
+        <div class="summary" id="summary"></div>
+        <p class="form-note mt-md">Cerea ti risponde su WhatsApp per confermare disponibilità e ritiro.</p>
+      </div>
+      <div class="sheet-foot">
+        <a class="btn btn--accent" id="send-shop" href="#" target="_blank" rel="noopener">Invia l'ordine a Cerea</a>
+        <a class="btn btn--ghost" id="send-me" href="#" target="_blank" rel="noopener">Salva la conferma sul tuo WhatsApp</a>
+        <button type="button" class="btn btn--ghost" id="finish">Chiudi</button>
+      </div>
+    </div>
+  </dialog>
 
   <section class="section" id="faq" aria-labelledby="faq-h">
     <div class="wrap">

@@ -1,6 +1,7 @@
 /* Cerea — prenotazione panettone.
    Nessun server: il carrello vive nel browser e l'ordine parte come messaggio WhatsApp
-   precompilato (verso Cerea e, come conferma, verso il numero del cliente). */
+   precompilato (verso Cerea e, come conferma, verso il numero del cliente).
+   Flusso: schede gusto → barra carrello → pannello a 3 passi (Carrello, Ritiro, Dati) → WhatsApp. */
 (function () {
   'use strict';
 
@@ -20,22 +21,29 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var money = new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' });
+  var dlg = $('checkout');
+  var form = $('order-form');
+  var STEPS = 3;
+  var step = 1;
+  var lastFocus = null;
 
   // ── Catalogo letto dall'HTML (unica fonte di verità) ─────────────────────
   var catalog = {};
   Array.prototype.forEach.call(document.querySelectorAll('.flavor'), function (card) {
-    Array.prototype.forEach.call(card.querySelectorAll('.size-btn'), function (b) {
-      var size = Number(b.dataset.size);
+    Array.prototype.forEach.call(card.querySelectorAll('input[type=radio]'), function (r) {
+      var size = Number(r.value);
       catalog[card.dataset.id + '|' + size] = {
         key: card.dataset.id + '|' + size,
+        id: card.dataset.id,
         name: card.dataset.name,
         size: size,
-        price: Number(b.dataset.price)
+        price: Number(r.dataset.price)
       };
     });
   });
 
   function sizeLabel(g) { return g >= 1000 ? (g / 1000) + ' kg' : g + ' g'; }
+  function plural(n) { return n + (n === 1 ? ' panettone' : ' panettoni'); }
 
   // ── Stato carrello ───────────────────────────────────────────────────────
   var cart = load();
@@ -55,26 +63,27 @@
   function total() {
     return cart.reduce(function (s, l) { return s + catalog[l.k].price * l.q; }, 0);
   }
+  function count() {
+    return cart.reduce(function (s, l) { return s + l.q; }, 0);
+  }
   function announce(msg) { $('cart-status').textContent = msg; }
+  function find(key) { return cart.filter(function (l) { return l.k === key; })[0]; }
 
   function add(key) {
-    var line = cart.filter(function (l) { return l.k === key; })[0];
-    if (line) { line.q = Math.min(CONFIG.maxQty, line.q + 1); } else { cart.push({ k: key, q: 1 }); }
+    var line = find(key);
+    if (line) {
+      if (line.q >= CONFIG.maxQty) { announce('Massimo ' + CONFIG.maxQty + ' per gusto e pezzatura. Per quantità maggiori scrivici su WhatsApp.'); return; }
+      line.q += 1;
+    } else { cart.push({ k: key, q: 1 }); }
     save(); render();
-    announce(catalog[key].name + ' ' + sizeLabel(catalog[key].size) + ' aggiunto al carrello');
+    announce(catalog[key].name + ' ' + sizeLabel(catalog[key].size) + ' aggiunto. Nel carrello: ' + plural(count()) + ', ' + money.format(total()));
   }
   function change(key, delta) {
-    var line = cart.filter(function (l) { return l.k === key; })[0];
+    var line = find(key);
     if (!line) return;
-    line.q += delta;
-    if (line.q <= 0) cart = cart.filter(function (l) { return l !== line; });
-    line.q = Math.min(line.q, CONFIG.maxQty);
+    line.q = Math.min(CONFIG.maxQty, line.q + delta);
+    if (line.q <= 0) { cart = cart.filter(function (l) { return l !== line; }); announce('Rimosso dal carrello.'); }
     save(); render();
-  }
-  function remove(key) {
-    cart = cart.filter(function (l) { return l.k !== key; });
-    save(); render();
-    announce('Articolo rimosso dal carrello');
   }
 
   // ── Render ───────────────────────────────────────────────────────────────
@@ -86,6 +95,21 @@
   }
 
   function render() {
+    // barra carrello
+    var n = count(), has = n > 0;
+    $('cart-bar').hidden = !has;
+    document.body.classList.toggle('has-cart', has);
+    $('bar-count').textContent = plural(n);
+    $('bar-total').textContent = money.format(total());
+
+    // schede: indicatore "nel carrello"
+    Array.prototype.forEach.call(document.querySelectorAll('.flavor'), function (card) {
+      var q = cart.reduce(function (s, l) { return catalog[l.k].id === card.dataset.id ? s + l.q : s; }, 0);
+      card.classList.toggle('has-items', q > 0);
+      card.querySelector('.in-cart').textContent = q > 0 ? 'Nel carrello: ' + q : '';
+    });
+
+    // righe carrello (passo 1)
     var list = $('cart-lines');
     list.textContent = '';
     cart.forEach(function (l) {
@@ -98,42 +122,27 @@
       li.appendChild(info);
       li.appendChild(el('div', 'line-total', money.format(item.price * l.q)));
 
-      var ctrl = el('div', 'ctrl');
       var qty = el('div', 'qty');
-      var minus = el('button', null, '−'); minus.type = 'button';
-      minus.setAttribute('aria-label', 'Diminuisci quantità: ' + item.name + ' ' + sizeLabel(item.size));
+      var minus = el('button', null, l.q === 1 ? '×' : '−'); minus.type = 'button';
+      minus.setAttribute('aria-label', (l.q === 1 ? 'Rimuovi: ' : 'Diminuisci: ') + item.name + ' ' + sizeLabel(item.size));
       minus.dataset.act = 'dec'; minus.dataset.k = l.k;
       var out = el('output', null, String(l.q));
       var plus = el('button', null, '+'); plus.type = 'button';
-      plus.setAttribute('aria-label', 'Aumenta quantità: ' + item.name + ' ' + sizeLabel(item.size));
+      plus.setAttribute('aria-label', 'Aumenta: ' + item.name + ' ' + sizeLabel(item.size));
       plus.dataset.act = 'inc'; plus.dataset.k = l.k;
       if (l.q >= CONFIG.maxQty) plus.disabled = true;
       qty.appendChild(minus); qty.appendChild(out); qty.appendChild(plus);
-      ctrl.appendChild(qty);
-      li.appendChild(ctrl);
-
-      var rm = el('button', 'remove', 'Rimuovi'); rm.type = 'button';
-      rm.setAttribute('aria-label', 'Rimuovi ' + item.name + ' ' + sizeLabel(item.size));
-      rm.dataset.act = 'rm'; rm.dataset.k = l.k;
-      var rmWrap = el('div', 'rm-wrap'); rmWrap.appendChild(rm);
-      li.appendChild(rmWrap);
+      li.appendChild(qty);
 
       list.appendChild(li);
     });
-
-    var has = cart.length > 0;
-    list.hidden = !has;
-    $('cart-total').hidden = !has;
     $('cart-empty').hidden = has;
+    $('cart-total').hidden = !has;
     $('total').textContent = money.format(total());
-    $('bar-total').textContent = money.format(total());
-    $('submit').disabled = !has;
+    if (step === 1) $('next').disabled = !has;
 
-    Array.prototype.forEach.call(document.querySelectorAll('.size-btn'), function (b) {
-      var key = b.closest('.flavor').dataset.id + '|' + b.dataset.size;
-      var inCart = cart.some(function (l) { return l.k === key; });
-      b.classList.toggle('added', inCart);
-    });
+    // se il carrello si svuota mentre il pannello è aperto, torna al passo 1
+    if (!has && dlg.open && step !== 1 && $('done').hidden) goTo(1, false);
   }
 
   // ── Date e orari ─────────────────────────────────────────────────────────
@@ -146,7 +155,9 @@
     return iso(d) === s ? d : null;
   }
   function isOpenDay(d) { return CONFIG.closedWeekdays.indexOf(d.getDay()) === -1; }
-
+  function longDate(d) {
+    return d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
   function firstPickup() {
     var d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -161,12 +172,11 @@
     var max = parseISO(CONFIG.lastPickup);
     input.min = iso(min);
     input.max = CONFIG.lastPickup;
-    var seasonOver = min > max;
-    if (seasonOver) {
+    if (min > max) {
       $('date-hint').textContent = 'Le prenotazioni online per questa stagione sono chiuse. Scrivici su WhatsApp.';
       input.disabled = true; $('time').disabled = true;
     } else {
-      $('date-hint').textContent = 'Ritiro da martedì a sabato, 08:00–18:00. Primo ritiro possibile: ' + longDate(min) +
+      $('date-hint').textContent = 'Ritiro da martedì a sabato, 08:00–18:00. Primo giorno disponibile: ' + longDate(min) +
         '. Ultimo: ' + longDate(max) + '.';
     }
     var sel = $('time');
@@ -174,9 +184,6 @@
       var label = pad(Math.floor(m / 60)) + ':' + pad(m % 60);
       var o = document.createElement('option'); o.value = label; o.textContent = label; sel.appendChild(o);
     }
-  }
-  function longDate(d) {
-    return d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   }
 
   // ── Telefono ─────────────────────────────────────────────────────────────
@@ -192,7 +199,7 @@
     return digits.length >= 9 && digits.length <= 15 ? digits : null;
   }
 
-  // ── Validazione ──────────────────────────────────────────────────────────
+  // ── Validazione (per passo) ──────────────────────────────────────────────
   function setErr(id, msg) {
     var field = $(id).closest('.field');
     var out = $(id + '-err');
@@ -200,36 +207,90 @@
     if (field) field.classList.toggle('invalid', !!msg);
     $(id).setAttribute('aria-invalid', msg ? 'true' : 'false');
   }
+  function showAlert(msg) { var a = $('form-alert'); a.textContent = msg; a.hidden = !msg; }
 
-  function validate() {
-    var ok = true, first = null;
-    function fail(id, msg) { setErr(id, msg); ok = false; if (!first) first = $(id); }
-
+  function checkDate() {
     var d = parseISO($('date').value);
     var min = firstPickup(), max = parseISO(CONFIG.lastPickup);
-    if (!d) fail('date', 'Scegli la data di ritiro.');
-    else if (!isOpenDay(d)) fail('date', 'Siamo chiusi domenica e lunedì: scegli da martedì a sabato.');
-    else if (d < min) fail('date', 'Serve un anticipo di almeno ' + CONFIG.minLeadDays + ' giorni: primo ritiro ' + longDate(min) + '.');
-    else if (d > max) fail('date', 'L\'ultimo ritiro possibile è il ' + longDate(max) + '.');
-    else setErr('date', '');
-
-    if (!$('time').value) fail('time', 'Scegli l\'orario.'); else setErr('time', '');
-
-    var name = $('name').value.trim();
-    if (name.length < 2) fail('name', 'Inserisci nome e cognome.'); else setErr('name', '');
-
-    if (!normalizePhone($('phone').value)) fail('phone', 'Inserisci un numero valido (es. 333 1234567).');
-    else setErr('phone', '');
-
-    var pr = $('privacy-err');
-    if (!$('privacy').checked) { pr.textContent = 'Per procedere devi accettare privacy e condizioni.'; ok = false; if (!first) first = $('privacy'); }
-    else pr.textContent = '';
-
-    if (!cart.length) { ok = false; showAlert('Il carrello è vuoto.'); } else showAlert('');
-    if (first) first.focus();
-    return ok;
+    var msg = '';
+    if (!d) msg = 'Scegli il giorno del ritiro.';
+    else if (!isOpenDay(d)) msg = 'Siamo chiusi domenica e lunedì. Scegli un giorno da martedì a sabato.';
+    else if (d < min) msg = 'Servono almeno ' + CONFIG.minLeadDays + ' giorni. Il primo giorno disponibile è ' + longDate(min) + '.';
+    else if (d > max) msg = 'L\'ultimo ritiro possibile è ' + longDate(max) + '.';
+    setErr('date', msg);
+    return !msg;
   }
-  function showAlert(msg) { var a = $('form-alert'); a.textContent = msg; a.hidden = !msg; }
+
+  function validateStep(n) {
+    var first = null;
+    function bad(id) { if (!first) first = $(id); }
+    showAlert('');
+
+    if (n === 1) {
+      if (!cart.length) { showAlert('Il carrello è vuoto. Aggiungi almeno un panettone.'); return false; }
+      return true;
+    }
+    if (n === 2) {
+      if (!checkDate()) bad('date');
+      if (!$('time').value) { setErr('time', 'Scegli l\'orario di ritiro.'); bad('time'); } else setErr('time', '');
+    }
+    if (n === 3) {
+      if ($('name').value.trim().length < 2) { setErr('name', 'Inserisci nome e cognome.'); bad('name'); } else setErr('name', '');
+      if (!normalizePhone($('phone').value)) { setErr('phone', 'Il numero non sembra valido. Esempio: 333 1234567 (estero: +44…).'); bad('phone'); } else setErr('phone', '');
+      if (!$('privacy').checked) { $('privacy-err').textContent = 'Per inviare l\'ordine spunta la casella privacy e condizioni.'; bad('privacy'); } else $('privacy-err').textContent = '';
+    }
+    if (first) { first.focus(); return false; }
+    return true;
+  }
+
+  // ── Passi ────────────────────────────────────────────────────────────────
+  var NEXT_LABEL = { 1: 'Continua con il ritiro', 2: 'Continua con i tuoi dati', 3: 'Ordina su WhatsApp' };
+
+  function pickupText() {
+    var d = parseISO($('date').value);
+    return d && $('time').value
+      ? d.toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + $('time').value
+      : '';
+  }
+
+  function renderReview() {
+    var r = $('review');
+    r.textContent = '';
+    function row(label, value, target) {
+      var wrap = el('div');
+      wrap.appendChild(el('dt', null, label));
+      var dd = el('dd');
+      dd.appendChild(document.createTextNode(value));
+      var b = el('button', null, 'Modifica'); b.type = 'button'; b.dataset.goto = String(target);
+      b.setAttribute('aria-label', 'Modifica ' + label.toLowerCase());
+      dd.appendChild(b);
+      wrap.appendChild(dd);
+      r.appendChild(wrap);
+    }
+    row('Ordine', plural(count()) + ' · ' + money.format(total()), 1);
+    row('Ritiro', pickupText(), 2);
+  }
+
+  function goTo(n, focus) {
+    step = n;
+    Array.prototype.forEach.call(form.querySelectorAll('.step'), function (s) {
+      s.hidden = Number(s.dataset.step) !== n;
+    });
+    Array.prototype.forEach.call($('steps').children, function (li, i) {
+      li.classList.toggle('done', i + 1 < n);
+      if (i + 1 === n) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+    });
+    $('back').hidden = n === 1;
+    $('next').textContent = NEXT_LABEL[n];
+    $('next').disabled = n === 1 && !cart.length;
+    showAlert('');
+    if (n === 3) renderReview();
+    form.querySelector('.sheet-body').scrollTop = 0;
+    if (focus !== false) {
+      var h = form.querySelector('.step[data-step="' + n + '"] h3');
+      if (h) h.focus();
+    }
+  }
 
   // ── Messaggi ─────────────────────────────────────────────────────────────
   function linesText() {
@@ -251,29 +312,76 @@
       '\n\nCerea ti confermerà la disponibilità su WhatsApp. Per modifiche o annullamenti scrivi al +39 351 719 4846 almeno ' +
       CONFIG.minLeadDays + ' giorni prima del ritiro.';
 
-    return { shop: shop, me: me, summary: shop };
+    return { shop: shop, me: me };
   }
   function wa(phone, text) { return 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text); }
 
+  // ── Apertura / chiusura pannello ─────────────────────────────────────────
+  function resetPanel() {
+    $('done').hidden = true;
+    form.hidden = false;
+    $('steps').hidden = false;
+  }
+  function openCart() {
+    lastFocus = document.activeElement;
+    resetPanel();
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    document.body.classList.add('modal-open');
+    goTo(1);
+  }
+  function closeCart() {
+    if (typeof dlg.close === 'function') dlg.close(); else { dlg.removeAttribute('open'); dlg.dispatchEvent(new Event('close')); }
+  }
+  dlg.addEventListener('close', function () {
+    document.body.classList.remove('modal-open');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) closeCart(); });
+
   // ── Eventi ───────────────────────────────────────────────────────────────
-  document.addEventListener('click', function (e) {
-    var sb = e.target.closest('.size-btn');
-    if (sb) { add(sb.closest('.flavor').dataset.id + '|' + sb.dataset.size); return; }
+  $('flavors').addEventListener('click', function (e) {
+    var b = e.target.closest('.add-btn');
+    if (!b) return;
+    var card = b.closest('.flavor');
+    var checked = card.querySelector('input[type=radio]:checked');
+    if (checked) add(card.dataset.id + '|' + checked.value);
+  });
+
+  $('cart-lines').addEventListener('click', function (e) {
     var act = e.target.closest('[data-act]');
     if (!act) return;
-    if (act.dataset.act === 'inc') change(act.dataset.k, 1);
-    else if (act.dataset.act === 'dec') change(act.dataset.k, -1);
-    else if (act.dataset.act === 'rm') remove(act.dataset.k);
+    var k = act.dataset.k, kind = act.dataset.act;
+    if (kind === 'inc') change(k, 1);
+    else if (kind === 'dec') change(k, -1);
+    // dopo il re-render i pulsanti sono nuovi: riporta il focus su quello corrispondente
+    var again = $('cart-lines').querySelector('[data-act="' + kind + '"][data-k="' + k + '"]');
+    if (again && !again.disabled) again.focus();
   });
 
-  ['date', 'time', 'name', 'phone'].forEach(function (id) {
-    $(id).addEventListener('input', function () { setErr(id, ''); });
-    $(id).addEventListener('change', function () { setErr(id, ''); });
+  $('open-cart').addEventListener('click', openCart);
+  $('close-cart').addEventListener('click', closeCart);
+  $('finish').addEventListener('click', closeCart);
+  $('back-to-shop').addEventListener('click', closeCart);
+  $('back').addEventListener('click', function () { if (step > 1) goTo(step - 1); });
+  $('review').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-goto]');
+    if (b) goTo(Number(b.dataset.goto));
   });
 
-  $('order-form').addEventListener('submit', function (e) {
+  $('date').addEventListener('change', checkDate);
+  $('time').addEventListener('change', function () { setErr('time', ''); });
+  $('name').addEventListener('input', function () { setErr('name', ''); });
+  $('phone').addEventListener('input', function () { setErr('phone', ''); });
+  $('privacy').addEventListener('change', function () { $('privacy-err').textContent = ''; });
+
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validateStep(step)) return;
+    if (step < STEPS) { goTo(step + 1); return; }
+
+    // ultimo passo: ricontrolla tutto (l'utente può essere tornato indietro) e invia
+    if (!validateStep(1)) { goTo(1); return; }
+    if (!validateStep(2)) { goTo(2); return; }
 
     var data = {
       date: parseISO($('date').value),
@@ -284,32 +392,20 @@
     };
     var msgs = build(data);
     var toShop = wa(CONFIG.shopPhone, msgs.shop);
-    var toMe = wa(data.phone, msgs.me);
 
-    $('summary').textContent = msgs.summary;
+    $('summary').textContent = msgs.shop;
     $('send-shop').href = toShop;
-    $('send-me').href = toMe;
-    $('order-form').hidden = true;
-    $('cart-lines').hidden = true; $('cart-total').hidden = true; $('cart-empty').hidden = true;
-    $('cart-h').hidden = true;
+    $('send-me').href = wa(data.phone, msgs.me);
+    form.hidden = true;
+    $('steps').hidden = true;
     $('done').hidden = false;
-    $('done').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('done-title').focus();
 
-    // Il carrello si svuota: l'ordine ormai è nel messaggio.
-    cart = []; save();
-    $('bar-total').textContent = money.format(0);
-    Array.prototype.forEach.call(document.querySelectorAll('.size-btn'), function (b) { b.classList.remove('added'); });
+    // L'ordine ormai è nel messaggio: svuota il carrello.
+    cart = []; save(); render();
+    form.reset();
 
     window.open(toShop, '_blank', 'noopener');
-  });
-
-  $('new-order').addEventListener('click', function () {
-    $('done').hidden = true;
-    $('order-form').hidden = false;
-    $('cart-h').hidden = false;
-    $('order-form').reset();
-    render();
-    $('flavors').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   setupDate();
