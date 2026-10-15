@@ -19,8 +19,17 @@ var HEADERS = ['Ricevuto il', 'ID ordine', 'Nome e cognome', 'Telefono', 'Gusto'
                'Importo riga (€)', 'Data ritiro', 'Note', 'Stato'];
 var STATI = ['Da confermare', 'Confermato', 'Pronto', 'Ritirato', 'Annullato'];
 
+// Accetta sia l'ID del foglio sia l'indirizzo intero copiato dal browser.
+function sheetId_() {
+  var m = String(SHEET_ID).match(/\/d\/([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : String(SHEET_ID).trim();
+}
+
 function getSpreadsheet_() {
-  return SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SHEET_ID);
+  var active = SpreadsheetApp.getActiveSpreadsheet();   // c'è solo se lo script è aperto DAL foglio
+  if (active) return active;
+  if (!sheetId_()) throw new Error('Manca SHEET_ID: incolla in cima al codice l\'indirizzo del foglio.');
+  return SpreadsheetApp.openById(sheetId_());
 }
 
 function getSheet_() {
