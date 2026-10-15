@@ -35,7 +35,7 @@ Se cambi il codice di `Code.gs` devi creare una **nuova versione** della distrib
 
 ## Foto dei panettoni
 
-Nelle schede (`panettone/index.html`) il gusto "Pesche semi candite, caramello e nocciole" ha uno spazio riservato (`<div class="photo-slot">`). Per metterci la foto sostituisci quel `div` con
+Nelle schede (`panettone/index.html`) i gusti "Pesche semi candite e caramello" e "Marron glacé" hanno uno spazio riservato (`<div class="photo-slot">`). Per metterci la foto sostituisci quel `div` con
 `<img src="/img/panettone-pesche.webp" alt="descrizione" width="720" height="900" loading="lazy" decoding="async">`
 (immagine WebP larga circa 720 px, in `img/`).
 

@@ -14,8 +14,7 @@
   const URL = 'https://script.google.com/macros/s/AKfycbzlFyK3HkfNbJqQNFh9bvwqZ_rVo6xlaFkTPrkEq63_WYCjJFPi3t8LFOn0qDaq5Q6k/exec';
   const TOKEN = '8675a9933ce08872a33a5b4f';
 
-  const FLAVORS = ['Classico', 'Pesche semi candite, caramello e nocciole',
-                   'Milano, frutti rossi e cioccolato fondente', 'Cacao e tre cioccolati'];
+  const FLAVORS = ['Classico', 'Pesche semi candite e caramello', 'Marron glacé', 'Cacao e cioccolato'];
   const SIZES = [['750 g', 34], ['1 kg', 45]];
   const NAMES = ['Mario Rossi', 'Giulia Bianchi', 'Luca Verdi', 'Anna Neri', 'Paolo Gallo', 'Sara Costa',
                  'Marco Ferrari', 'Elena Romano', 'Davide Greco', 'Chiara Conti', 'Andrea Bruno', 'Laura Mancini',

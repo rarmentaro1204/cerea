@@ -205,7 +205,7 @@ function provaOrdine() {
   var risposta = doPost({ postData: { contents: JSON.stringify({
     token: TOKEN, id: 'PROVA-' + Utilities.formatDate(new Date(), 'Europe/Rome', 'HHmmss'),
     name: 'PROVA Mario Rossi', phone: '+393330000000', date: giorno, notes: 'ORDINE DI PROVA',
-    items: [{ flavor: 'Classico', size: '750 g', qty: 2, amount: 68 }, { flavor: 'Cacao e tre cioccolati', size: '1 kg', qty: 1, amount: 45 }]
+    items: [{ flavor: 'Classico', size: '750 g', qty: 2, amount: 68 }, { flavor: 'Cacao e cioccolato', size: '1 kg', qty: 1, amount: 45 }]
   }) } });
   Logger.log(risposta.getContent());
 }
