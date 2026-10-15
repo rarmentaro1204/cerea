@@ -220,9 +220,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .shop { padding-bottom: var(--section); }
 .shop-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
 .shop-head h2 { font-size: .75rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
-.flavor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(16px, 2.4vw, 28px); }
-.flavor { display: flex; flex-direction: column; gap: 22px; padding: clamp(24px, 3vw, 36px); background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); transition: border-color .25s; }
+.flavor-grid { display: grid; grid-template-columns: 1fr; gap: clamp(16px, 2.4vw, 28px); }
+.flavor { display: grid; grid-template-columns: minmax(200px, 300px) 1fr; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color .25s; }
 .flavor.has-items { border-color: var(--accent); }
+.flavor-photo { position: relative; background: var(--sand); min-height: 260px; }
+.flavor-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo-slot { position: absolute; inset: 0; display: grid; place-items: center; border-right: 1px dashed var(--line); background: repeating-linear-gradient(135deg, var(--sand) 0 12px, #ebe6dc 12px 24px); }
+.photo-slot span { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: var(--paper); padding: 8px 14px; border: 1px solid var(--line); }
+.flavor-main { display: flex; flex-direction: column; gap: 22px; padding: clamp(24px, 3vw, 36px); }
 .flavor .h3 { font-size: 1.55rem; margin-bottom: 8px; }
 .flavor p { color: var(--muted); font-size: .95rem; }
 .flavor-body { flex: 1; }
@@ -238,6 +243,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .size-picker input:focus-visible + .opt { outline: 2px solid var(--accent); outline-offset: 3px; }
 .flavor-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .in-cart { font-size: .8125rem; color: var(--accent); min-height: 1.4em; }
+
+/* Parte alta pagina panettone */
+.pan-hero { padding-block: clamp(32px, 6vw, 80px) clamp(40px, 6vw, 80px); }
+.pan-hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
+.pan-hero .h1 { font-size: clamp(2.4rem, 5.2vw, 4.25rem); margin-bottom: 24px; }
+.pan-hero .lead { margin-bottom: 32px; }
+.price-tiles { display: flex; gap: 12px; margin-bottom: 20px; }
+.price-tiles li { flex: 0 1 180px; padding: 16px 20px; border: 1px solid var(--line); background: var(--paper); border-radius: var(--radius); }
+.price-tiles span { display: block; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.price-tiles b { font-family: var(--serif); font-weight: 400; font-size: 2.2rem; line-height: 1.15; }
+.hero-cta { margin-top: 28px; }
+.pan-hero-media { margin: 0; }
+.pan-hero-media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: 60% 70%; border-radius: var(--radius); }
 
 /* Barra carrello */
 .cart-bar {
@@ -353,7 +371,8 @@ body.modal-open { overflow: hidden; }
 
 /* Responsive */
 @media (max-width: 960px) {
-  .hero-grid, .split, .promo-grid { grid-template-columns: 1fr; }
+  .hero-grid, .split, .promo-grid, .pan-hero-grid { grid-template-columns: 1fr; }
+  .pan-hero-media img { aspect-ratio: 4 / 3; }
   .hero-media { order: -1; }
   .split--flip .split-media { order: 0; }
   .split-media img { aspect-ratio: 4 / 3; }
@@ -382,7 +401,9 @@ body.modal-open { overflow: hidden; }
   .product-grid, .grid-6, .footer-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .row-2 { grid-template-columns: 1fr; }
-  .flavor-grid { grid-template-columns: 1fr; }
+  .flavor { grid-template-columns: 1fr; }
+  .flavor-photo { min-height: 0; aspect-ratio: 4 / 3; }
+  .photo-slot { border-right: 0; }
   dialog.sheet { width: 100vw; box-shadow: none; }
   .cart-bar { width: calc(100% - 24px); padding-left: 18px; }
   .cart-bar b { font-size: 1.2rem; }

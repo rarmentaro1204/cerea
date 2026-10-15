@@ -15,6 +15,10 @@
     openTo: 18 * 60,             // 18:00
     slotStep: 30,                // minuti
     maxQty: 10,                  // per riga di carrello
+    // Registro ordini su Google Sheets: incollare qui l'URL dell'app web di Apps Script (vedi README).
+    // Se è vuoto, l'ordine parte solo su WhatsApp.
+    sheetUrl: '',
+    sheetToken: '8675a9933ce08872a33a5b4f',  // deve coincidere con TOKEN in apps-script/Code.gs
     storageKey: 'cerea-cart-v1',
     address: 'Via Giuseppe Barbaroux 8, Torino'
   };
@@ -300,15 +304,49 @@
     }).join('\n');
   }
 
+  function newOrderId() {
+    var d = new Date();
+    var rnd = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return 'CER-' + String(d.getFullYear()).slice(2) + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' + rnd;
+  }
+
+  // Copia dell'ordine nel foglio Google di Cerea (una riga per gusto e pezzatura).
+  // Invio "fire and forget": se fallisce, l'ordine su WhatsApp funziona comunque.
+  function logOrder(data) {
+    if (!CONFIG.sheetUrl) return;
+    var payload = {
+      token: CONFIG.sheetToken,
+      id: data.id,
+      name: data.name,
+      phone: '+' + data.phone,
+      date: iso(data.date),
+      time: data.time,
+      notes: data.notes,
+      items: cart.map(function (l) {
+        var i = catalog[l.k];
+        return { flavor: i.name, size: sizeLabel(i.size), qty: l.q, amount: i.price * l.q };
+      })
+    };
+    try {
+      fetch(CONFIG.sheetUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        keepalive: true,
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      }).catch(function () { /* ignorato */ });
+    } catch (e) { /* ignorato */ }
+  }
+
   function build(data) {
     var when = longDate(data.date) + ', ore ' + data.time;
     var base = linesText() + '\n\nTotale: ' + money.format(total()) + '\nRitiro: ' + when + ' (' + CONFIG.address + ')\nPagamento al ritiro.';
 
-    var shop = 'Ciao Cerea, vorrei prenotare:\n' + base +
+    var shop = 'Ciao Cerea, vorrei prenotare (ordine ' + data.id + '):\n' + base +
       '\n\nNome: ' + data.name + '\nTelefono: +' + data.phone +
       (data.notes ? '\nNote: ' + data.notes : '') + '\n\nGrazie!';
 
-    var me = 'Ciao ' + data.name.split(' ')[0] + ', questo è il riepilogo del tuo ordine da Cerea:\n' + base +
+    var me = 'Ciao ' + data.name.split(' ')[0] + ', questo è il riepilogo del tuo ordine ' + data.id + ' da Cerea:\n' + base +
       '\n\nCerea ti confermerà la disponibilità su WhatsApp. Per modifiche o annullamenti scrivi al +39 351 719 4846 almeno ' +
       CONFIG.minLeadDays + ' giorni prima del ritiro.';
 
@@ -388,9 +426,11 @@
       time: $('time').value,
       name: $('name').value.trim().replace(/\s+/g, ' '),
       phone: normalizePhone($('phone').value),
-      notes: $('notes').value.trim().replace(/\s+/g, ' ')
+      notes: $('notes').value.trim().replace(/\s+/g, ' '),
+      id: newOrderId()
     };
     var msgs = build(data);
+    logOrder(data);
     var toShop = wa(CONFIG.shopPhone, msgs.shop);
 
     $('summary').textContent = msgs.shop;

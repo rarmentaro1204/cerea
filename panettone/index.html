@@ -21,19 +21,19 @@
 <meta property="og:title" content="Panettone artigianale Cerea — ordina e ritira a Torino">
 <meta property="og:description" content="Prenota il panettone artigianale Cerea a Torino: 4 gusti, 750 g a 34 € e 1 kg a 45 €. Scegli il giorno del ritiro e invia l&#x27;ordine su WhatsApp.">
 <meta property="og:url" content="https://cereaartisanbakery.com/panettone/">
-<meta property="og:image" content="https://cereaartisanbakery.com/img/og-cerea.jpg">
+<meta property="og:image" content="https://cereaartisanbakery.com/img/og-panettone.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Panettone artigianale Cerea — ordina e ritira a Torino">
 <meta name="twitter:description" content="Prenota il panettone artigianale Cerea a Torino: 4 gusti, 750 g a 34 € e 1 kg a 45 €. Scegli il giorno del ritiro e invia l&#x27;ordine su WhatsApp.">
-<meta name="twitter:image" content="https://cereaartisanbakery.com/img/og-cerea.jpg">
+<meta name="twitter:image" content="https://cereaartisanbakery.com/img/og-panettone.jpg">
 
 <meta name="geo.region" content="IT-TO">
 <meta name="geo.placename" content="Torino, Piemonte, Italia">
 <meta name="geo.position" content="45.0703;7.6869">
 <meta name="ICBM" content="45.0703, 7.6869">
-
+<link rel="preload" as="image" href="/img/panettone-classico.webp" fetchpriority="high">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -160,7 +160,8 @@
             "@id": "https://cereaartisanbakery.com/#bakery"
           }
         }
-      ]
+      ],
+      "image": "https://cereaartisanbakery.com/img/panettone-classico.webp"
     },
     {
       "@type": "Product",
@@ -232,7 +233,8 @@
             "@id": "https://cereaartisanbakery.com/#bakery"
           }
         }
-      ]
+      ],
+      "image": "https://cereaartisanbakery.com/img/panettone-milano.webp"
     },
     {
       "@type": "Product",
@@ -268,7 +270,8 @@
             "@id": "https://cereaartisanbakery.com/#bakery"
           }
         }
-      ]
+      ],
+      "image": "https://cereaartisanbakery.com/img/panettone-cacao.webp"
     },
     {
       "@type": "FAQPage",
@@ -344,18 +347,23 @@
   </div>
 </header>
 <main id="main">
-  <section class="page-head" aria-labelledby="pan-h">
-    <div class="wrap">
-      <nav class="small crumb" aria-label="Percorso"><a href="/">Home</a> / Panettone</nav>
-      <p class="eyebrow">Natale 2026 · su prenotazione</p>
-      <h1 class="h1" id="pan-h">Panettone artigianale <em>di Cerea</em></h1>
-      <p class="lead">Lievito madre vivo, lunga lievitazione, lavorazione a mano. Scegli il gusto, la pezzatura e il giorno in cui ritirarlo: noi lo prepariamo per te.</p>
-      <ul class="facts-inline">
-        <li>750 g — 34 €</li>
-        <li>1 kg — 45 €</li>
-        <li>Ritiro in negozio, Torino</li>
-        <li>Pagamento al ritiro</li>
-      </ul>
+  <section class="pan-hero" aria-labelledby="pan-h">
+    <div class="wrap pan-hero-grid">
+      <div class="pan-hero-text">
+        <nav class="small crumb" aria-label="Percorso"><a href="/">Home</a> / Panettone</nav>
+        <p class="eyebrow">Natale 2026 · su prenotazione</p>
+        <h1 class="h1" id="pan-h">Panettone artigianale <em>di Cerea</em></h1>
+        <p class="lead">Lievito madre vivo, lunga lievitazione, lavorazione a mano. Scegli il gusto, la pezzatura e il giorno in cui ritirarlo: noi lo prepariamo per te.</p>
+        <ul class="price-tiles" aria-label="Prezzi">
+          <li><span>750 g</span><b>34 €</b></li>
+          <li><span>1 kg</span><b>45 €</b></li>
+        </ul>
+        <p class="small">Quattro gusti · ritiro in negozio a Torino · pagamento al ritiro</p>
+        <p class="hero-cta"><a class="btn btn--accent" href="#gusti-h">Scegli il tuo gusto</a></p>
+      </div>
+      <figure class="pan-hero-media">
+        <img src="/img/panettone-classico.webp" alt="Panettone classico Cerea tagliato su una tavola natalizia, con candela, bicchieri e albero di Natale" width="900" height="1067" fetchpriority="high">
+      </figure>
     </div>
   </section>
 
@@ -363,63 +371,75 @@
     <div class="shop-head"><h2 id="gusti-h">Scegli il gusto e la pezzatura</h2></div>
     <div class="flavor-grid" id="flavors">
         <article class="flavor" data-id="classico" data-name="Classico">
-          <div class="flavor-body">
-            <h3 class="h3">Classico</h3>
-            <p>Il panettone della tradizione: lievito madre vivo, uvetta e arancia candita, lunga lievitazione.</p>
-          </div>
-          <fieldset class="size-picker">
-            <legend>Pezzatura</legend>
-              <label><input type="radio" name="size-classico" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
-              <label><input type="radio" name="size-classico" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
-          </fieldset>
-          <div class="flavor-foot">
-            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Classico">Aggiungi al carrello</button>
-            <span class="in-cart" aria-hidden="true"></span>
+          <div class="flavor-photo"><img src="/img/panettone-classico.webp" alt="Panettone classico Cerea tagliato, con uvetta e arancia candita, su una tavola natalizia con candela" width="900" height="1067" loading="lazy" decoding="async"></div>
+          <div class="flavor-main">
+            <div class="flavor-body">
+              <h3 class="h3">Classico</h3>
+              <p>Il panettone della tradizione: lievito madre vivo, uvetta e arancia candita, lunga lievitazione.</p>
+            </div>
+            <fieldset class="size-picker">
+              <legend>Pezzatura</legend>
+                <label><input type="radio" name="size-classico" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+                <label><input type="radio" name="size-classico" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+            </fieldset>
+            <div class="flavor-foot">
+              <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Classico">Aggiungi al carrello</button>
+              <span class="in-cart" aria-hidden="true"></span>
+            </div>
           </div>
         </article>
         <article class="flavor" data-id="pesche" data-name="Pesche semi candite, caramello e nocciole">
-          <div class="flavor-body">
-            <h3 class="h3">Pesche semi candite, caramello e nocciole</h3>
-            <p>Pesche semi candite, caramello e nocciole in un impasto morbido a lievito madre.</p>
-          </div>
-          <fieldset class="size-picker">
-            <legend>Pezzatura</legend>
-              <label><input type="radio" name="size-pesche" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
-              <label><input type="radio" name="size-pesche" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
-          </fieldset>
-          <div class="flavor-foot">
-            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Pesche semi candite, caramello e nocciole">Aggiungi al carrello</button>
-            <span class="in-cart" aria-hidden="true"></span>
+          <div class="flavor-photo"><div class="photo-slot" aria-hidden="true"><span>Foto in arrivo</span></div></div>
+          <div class="flavor-main">
+            <div class="flavor-body">
+              <h3 class="h3">Pesche semi candite, caramello e nocciole</h3>
+              <p>Pesche semi candite, caramello e nocciole in un impasto morbido a lievito madre.</p>
+            </div>
+            <fieldset class="size-picker">
+              <legend>Pezzatura</legend>
+                <label><input type="radio" name="size-pesche" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+                <label><input type="radio" name="size-pesche" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+            </fieldset>
+            <div class="flavor-foot">
+              <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Pesche semi candite, caramello e nocciole">Aggiungi al carrello</button>
+              <span class="in-cart" aria-hidden="true"></span>
+            </div>
           </div>
         </article>
         <article class="flavor" data-id="milano" data-name="Milano, frutti rossi e cioccolato fondente">
-          <div class="flavor-body">
-            <h3 class="h3">Milano, frutti rossi e cioccolato fondente</h3>
-            <p>Il panettone milanese con frutti rossi e cioccolato fondente: acidità e profondità.</p>
-          </div>
-          <fieldset class="size-picker">
-            <legend>Pezzatura</legend>
-              <label><input type="radio" name="size-milano" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
-              <label><input type="radio" name="size-milano" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
-          </fieldset>
-          <div class="flavor-foot">
-            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Milano, frutti rossi e cioccolato fondente">Aggiungi al carrello</button>
-            <span class="in-cart" aria-hidden="true"></span>
+          <div class="flavor-photo"><img src="/img/panettone-milano.webp" alt="Panettone Milano di Cerea con frutti rossi e gocce di cioccolato fondente, tagliato davanti alla scatola Cerea" width="720" height="710" loading="lazy" decoding="async"></div>
+          <div class="flavor-main">
+            <div class="flavor-body">
+              <h3 class="h3">Milano, frutti rossi e cioccolato fondente</h3>
+              <p>Il panettone milanese con frutti rossi e cioccolato fondente: acidità e profondità.</p>
+            </div>
+            <fieldset class="size-picker">
+              <legend>Pezzatura</legend>
+                <label><input type="radio" name="size-milano" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+                <label><input type="radio" name="size-milano" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+            </fieldset>
+            <div class="flavor-foot">
+              <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Milano, frutti rossi e cioccolato fondente">Aggiungi al carrello</button>
+              <span class="in-cart" aria-hidden="true"></span>
+            </div>
           </div>
         </article>
         <article class="flavor" data-id="cacao" data-name="Cacao e tre cioccolati">
-          <div class="flavor-body">
-            <h3 class="h3">Cacao e tre cioccolati</h3>
-            <p>Impasto al cacao con tre cioccolati: il più goloso della carta.</p>
-          </div>
-          <fieldset class="size-picker">
-            <legend>Pezzatura</legend>
-              <label><input type="radio" name="size-cacao" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
-              <label><input type="radio" name="size-cacao" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
-          </fieldset>
-          <div class="flavor-foot">
-            <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Cacao e tre cioccolati">Aggiungi al carrello</button>
-            <span class="in-cart" aria-hidden="true"></span>
+          <div class="flavor-photo"><img src="/img/panettone-cacao.webp" alt="Panettone al cacao e tre cioccolati di Cerea, tagliato su alzata di legno" width="720" height="873" loading="lazy" decoding="async"></div>
+          <div class="flavor-main">
+            <div class="flavor-body">
+              <h3 class="h3">Cacao e tre cioccolati</h3>
+              <p>Impasto al cacao con tre cioccolati: il più goloso della carta.</p>
+            </div>
+            <fieldset class="size-picker">
+              <legend>Pezzatura</legend>
+                <label><input type="radio" name="size-cacao" value="750" data-price="34" checked><span class="opt"><b>750 g</b><span>34 €</span></span></label>
+                <label><input type="radio" name="size-cacao" value="1000" data-price="45"><span class="opt"><b>1 kg</b><span>45 €</span></span></label>
+            </fieldset>
+            <div class="flavor-foot">
+              <button type="button" class="btn btn--ghost add-btn" aria-label="Aggiungi al carrello: Cacao e tre cioccolati">Aggiungi al carrello</button>
+              <span class="in-cart" aria-hidden="true"></span>
+            </div>
           </div>
         </article>
     </div>
@@ -491,7 +511,7 @@
     <div class="done" id="done" hidden>
       <div class="sheet-body">
         <h3 tabindex="-1" id="done-title">Quasi fatto: invia il messaggio su WhatsApp</h3>
-        <p class="small">L'ordine arriva a Cerea solo quando <strong>invii</strong> il messaggio. Se WhatsApp non si è aperto, usa il primo pulsante.</p>
+        <p class="small">Invia il messaggio per completare la prenotazione. Se WhatsApp non si è aperto, usa il primo pulsante.</p>
         <div class="summary" id="summary"></div>
         <p class="form-note mt-md">Cerea ti risponde su WhatsApp per confermare disponibilità e ritiro.</p>
       </div>
