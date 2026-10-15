@@ -133,3 +133,19 @@ function setup() {
   prod.getRange('A1:D1').setFontWeight('bold').setBackground('#efebe3');
   prod.setFrozenRows(1);
 }
+
+/**
+ * Prova veloce dal menu Esegui: scrive UN ordine finto nel foglio "Ordini" (nome "PROVA …").
+ * Serve a controllare che lo script riesca a scrivere. Poi cancella la riga.
+ * (Non eseguire doPost a mano dal menu: non ha dati e non serve.)
+ */
+function provaOrdine() {
+  var d = new Date(); d.setDate(d.getDate() + 5);
+  var giorno = Utilities.formatDate(d, 'Europe/Rome', 'yyyy-MM-dd');
+  var risposta = doPost({ postData: { contents: JSON.stringify({
+    token: TOKEN, id: 'PROVA-' + Utilities.formatDate(new Date(), 'Europe/Rome', 'HHmmss'),
+    name: 'PROVA Mario Rossi', phone: '+393330000000', date: giorno, time: '10:30', notes: 'ORDINE DI PROVA',
+    items: [{ flavor: 'Classico', size: '750 g', qty: 2, amount: 68 }, { flavor: 'Cacao e tre cioccolati', size: '1 kg', qty: 1, amount: 45 }]
+  }) } });
+  Logger.log(risposta.getContent());
+}
