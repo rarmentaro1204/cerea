@@ -119,6 +119,29 @@ function doGet() {
  * Da eseguire UNA volta (menu Esegui > setup): intestazioni, formato, menu a tendina "Stato",
  * filtro e foglio "Produzione" con i pezzi da preparare per giorno.
  */
+// Sostituisce le virgole con il punto e virgola, ma solo FUORI dalle virgolette (i fogli in italiano
+// vogliono ";" tra gli argomenti; dentro la query "select I, E, F" le virgole devono restare).
+function localizeFormula_(f) {
+  var out = '', inQuotes = false;
+  for (var i = 0; i < f.length; i++) {
+    var c = f.charAt(i);
+    if (c === '"') inQuotes = !inQuotes;
+    out += (c === ',' && !inQuotes) ? ';' : c;
+  }
+  return out;
+}
+
+// Scrive la formula e controlla il risultato: se il foglio (per la sua lingua) non la capisce,
+// la riscrive con il punto e virgola.
+function setFormulaSafe_(range, formula) {
+  range.setFormula(formula);
+  SpreadsheetApp.flush();
+  if (String(range.getDisplayValue()).indexOf('#ERROR') === 0) {
+    range.setFormula(localizeFormula_(formula));
+    SpreadsheetApp.flush();
+  }
+}
+
 // Lettera di colonna di un titolo (A, B, C…).
 function col_(name) {
   return String.fromCharCode(65 + HEADERS.indexOf(name));
@@ -161,7 +184,7 @@ function setup() {
   prod.clear();
   // setFormula vuole sempre la sintassi inglese (virgole), anche se il foglio è in italiano.
   // Se la scrivi A MANO in un foglio italiano usa il punto e virgola tra gli argomenti.
-  prod.getRange('A1').setFormula(
+  setFormulaSafe_(prod.getRange('A1'),
     '=IFERROR(QUERY(' + SHEET_NAME + '!A2:' + lastCol + ', "select ' + day + ', ' + flavor + ', ' + size + ', sum(' + qty + ') ' +
     'where ' + day + ' is not null and ' + state + ' <> \'Annullato\' group by ' + day + ', ' + flavor + ', ' + size + ' order by ' + day + ' ' +
     'label ' + day + ' \'Giorno ritiro\', ' + flavor + ' \'Gusto\', ' + size + ' \'Pezzatura\', sum(' + qty + ') \'Pezzi\'", 0), "Nessun ordine ancora")');
