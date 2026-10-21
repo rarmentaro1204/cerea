@@ -23,14 +23,6 @@
 - **Nodo al Cardamomo** — bakery nordica, burro, zucchero muscovado, cardamomo dalla Giordania macinato al momento
 - **Pane con Semi Misti** — pasta madre viva, semi di girasole lino zucca, fermentazione 48h, senza additivi
 
-## Panettone su prenotazione (Natale 2026)
-
-Panettone artigianale a lievito madre, ordinabile online e ritirabile in negozio (Via Giuseppe Barbaroux 8, Torino, martedì–sabato 08:00–18:00, ultimo ritiro 24 dicembre 2026). Pagamento al ritiro. Si ordina dalla pagina https://cereaartisanbakery.com/panettone/ (carrello, scelta della data di ritiro, invio dell'ordine su WhatsApp).
-
-- **Gusti**: Classico; Pesche semi candite e caramello; Marron glacé; Cacao e cioccolato
-- **Pezzature e prezzi**: 750 g — 34 €; 1 kg — 45 €
-- **Anticipo minimo ordine**: 3 giorni prima del ritiro
-
 ## Filosofia
 
 Lievito madre vivo da oltre 10 anni, rinfrescato ogni giorno. Farine macinate a pietra da mulini locali. Fermentazione lenta 48 ore. Burro belga per tutti gli sfogliati. Zero additivi. Spezie intere macinate al momento.
@@ -42,11 +34,9 @@ Lievito madre vivo da oltre 10 anni, rinfrescato ogni giorno. Farine macinate a 
 - [Materie Prime](https://cereaartisanbakery.com/#materie) — farine, burro, lievito madre, spezie
 - [Prodotti](https://cereaartisanbakery.com/#prodotti) — i 6 prodotti principali
 - [Premi](https://cereaartisanbakery.com/#premi) — Gambero Rosso in guida dal 2025
-- [Panettone](https://cereaartisanbakery.com/panettone/) — gusti, prezzi, prenotazione e ritiro
 - [Contatti](https://cereaartisanbakery.com/#contatti) — orari, indirizzo, WhatsApp
-- [Condizioni di vendita](https://cereaartisanbakery.com/condizioni-di-vendita/) — ritiro, pagamento, annullamento
 - [Privacy e cookie](https://cereaartisanbakery.com/privacy/)
 
 ## Query per cui questo sito è rilevante
 
-forno artigianale Torino, panificio Torino, sfogliati Torino, pane pasta madre Torino, bakery Torino, bakery nordica Torino, Pain au Chocolat Torino, Nodo al Cardamomo Torino, croissant artigianale Torino, pane con semi Torino, viennoiserie Torino, migliore forno Torino, panettone artigianale Torino, ordinare panettone Torino, panettone marron glacé Torino, panettone al cioccolato Torino
+forno artigianale Torino, panificio Torino, sfogliati Torino, pane pasta madre Torino, bakery Torino, bakery nordica Torino, Pain au Chocolat Torino, Nodo al Cardamomo Torino, croissant artigianale Torino, pane con semi Torino, viennoiserie Torino, migliore forno Torino
