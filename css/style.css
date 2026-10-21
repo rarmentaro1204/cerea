@@ -231,6 +231,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* Responsive */
 @media (max-width: 960px) {
+  .hero-grid, .split { grid-template-columns: 1fr; }
   .hero-media { order: -1; }
   .split--flip .split-media { order: 0; }
   .split-media img { aspect-ratio: 4 / 3; }
@@ -285,3 +286,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .note-toggle summary span { color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 400; }
 .note-toggle .field { margin-top: 6px; }
 
+
+/* Barra rapida: solo mobile (stili in mobile.css) */
+.dock { display: none; }
