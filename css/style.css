@@ -490,3 +490,10 @@ body.modal-open { overflow: hidden; }
 @media (max-width: 560px) {
   .flavor[data-id="marron"] .flavor-photo img { object-position: 30% 62%; }
 }
+
+/* Foto delle Pesche: fetta in alto e panettone intero in basso, si mostra la parte bassa */
+.flavor[data-id="pesche"] .flavor-photo img { object-position: 50% 100%; }
+@media (max-width: 560px) {
+  .flavor[data-id="pesche"] .flavor-photo { aspect-ratio: 4 / 4.4; }
+  .flavor[data-id="pesche"] .flavor-photo img { object-position: 50% 100%; }
+}
