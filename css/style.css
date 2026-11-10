@@ -246,14 +246,33 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .flavor-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .in-cart { font-size: .8125rem; color: var(--accent); min-height: 1.4em; }
 
-/* Parte alta pagina panettone: solo tipografia */
-.pan-top { background: var(--sand); border-bottom: 1px solid var(--line); padding-top: clamp(56px, 9vw, 120px); text-align: center; }
-.eyebrow--center { justify-content: center; }
-.eyebrow--center::after { content: ""; width: 28px; height: 1px; background: var(--accent); }
-.pan-top .h1 { font-size: clamp(2.6rem, 6.6vw, 5.5rem); line-height: 1.04; max-width: 11em; margin: 0 auto 28px; }
+/* Parte alta pagina panettone: testo a sinistra, foto a tutta altezza a destra */
+.pan-top { background: var(--sand); border-bottom: 1px solid var(--line); overflow: hidden; }
+.pan-top-inner { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); min-height: clamp(560px, calc(100vh - 68px), 780px); }
+.pan-top-text {
+  align-self: center; padding: clamp(40px, 5vw, 72px) clamp(24px, 4vw, 64px) clamp(40px, 5vw, 72px) max(var(--gutter), calc((100vw - var(--wrap)) / 2));
+}
+.pan-top .crumb { margin-bottom: 30px; }
+.pan-top .h1 { font-size: clamp(2.5rem, 4.6vw, 4.2rem); line-height: 1.05; margin-bottom: 22px; }
 .pan-top .h1 em { white-space: nowrap; }
-.pan-top .lead { margin: 0 auto; max-width: 31em; }
-.pan-top-cta { margin: 40px 0 0; padding-bottom: clamp(56px, 8vw, 104px); }
+.pan-top .lead { margin-bottom: 30px; max-width: 30em; }
+.pt-prices { display: flex; flex-wrap: wrap; width: fit-content; max-width: 100%; margin-bottom: 34px; border-block: 1px solid rgba(29, 29, 27, .16); }
+.pt-prices li { padding: 14px 32px 14px 0; }
+.pt-prices li + li { padding-left: 32px; border-left: 1px solid rgba(29, 29, 27, .16); }
+.pt-prices span { display: block; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.pt-prices b { font-family: var(--serif); font-weight: 400; font-size: clamp(1.9rem, 3vw, 2.5rem); line-height: 1.15; }
+.pt-cta { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 24px; }
+.pt-cta p { font-size: .875rem; color: var(--muted); }
+.pan-top-media { margin: 0; position: relative; overflow: hidden; min-height: 100%; background: #d7b995; }
+.pan-top-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 78%; }
+.js .pan-top-text > * { animation: pt-rise .9s var(--ease) both; }
+.js .pan-top-text > :nth-child(1) { animation-delay: .05s; }
+.js .pan-top-text > :nth-child(2) { animation-delay: .12s; }
+.js .pan-top-text > :nth-child(3) { animation-delay: .2s; }
+.js .pan-top-text > :nth-child(4) { animation-delay: .3s; }
+.js .pan-top-text > :nth-child(5) { animation-delay: .38s; }
+.js .pan-top-text > :nth-child(6) { animation-delay: .46s; }
+@keyframes pt-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 
 /* Barra carrello */
 .cart-bar {
@@ -438,3 +457,23 @@ body.modal-open { overflow: hidden; }
 
 /* Barra rapida: solo mobile (stili in mobile.css) */
 .dock { display: none; }
+
+/* Parte alta panettone: tablet e telefono */
+@media (max-width: 960px) {
+  .pan-top-inner { grid-template-columns: 1fr; min-height: 0; }
+  .pan-top-media { order: -1; min-height: 0; width: 100%; height: min(78vh, 125vw); }
+  .pan-top-media img { object-position: 50% 82%; }
+  .pan-top-text { padding: 32px var(--gutter) 48px; }
+  .pan-top .crumb { display: none; }
+}
+@media (max-width: 760px) {
+  .pan-top-media { height: 122vw; }
+  .pan-top-media img { transform: translate3d(0, var(--y, 0px), 0) scale(1.14); will-change: transform; }
+  .pan-top .h1 { font-size: clamp(2.45rem, 11.5vw, 3.2rem); }
+  .pt-prices li { padding-right: 18px; }
+  .pt-prices li + li { padding-left: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .pan-top-text > * { animation: none; }
+  .pan-top-media img { transform: none !important; }
+}

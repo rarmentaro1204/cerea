@@ -125,6 +125,7 @@
     var h = $('.hero-media');
     if (h) pairs.push([h, $('img', h)]);
     $$('.split-media').forEach(function (b) { pairs.push([b, $('img', b)]); });
+    $$('.pan-top-media').forEach(function (b) { pairs.push([b, $('img', b)]); });
     $$('.gallery .g-item').forEach(function (b) { pairs.push([b, $('img', b)]); });
     parallax = pairs.filter(function (p) { return p[1]; }).map(function (p) {
       return { box: p[0], img: p[1], hero: p[0].classList.contains('hero-media') };
