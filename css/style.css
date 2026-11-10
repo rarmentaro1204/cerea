@@ -477,3 +477,10 @@ body.modal-open { overflow: hidden; }
   .js .pan-top-text > * { animation: none; }
   .pan-top-media img { transform: none !important; }
 }
+
+/* Foto del Classico: il panettone sta nella metà bassa, la parte alta è solo parete */
+.flavor[data-id="classico"] .flavor-photo img { object-position: 50% 100%; }
+@media (max-width: 560px) {
+  .flavor[data-id="classico"] .flavor-photo { aspect-ratio: 4 / 4.2; }
+  .flavor[data-id="classico"] .flavor-photo img { object-position: 50% 88%; }
+}
